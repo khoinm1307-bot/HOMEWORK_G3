@@ -36,16 +36,16 @@ describe("BT8", () => {
         "Lorem", "Ipsum", "Dolor", "Sit", "Amet", "Diceret", "Action"
       );
       /* Đoạn này mình dùng để ghi lại kết quả, sau khi chạy thì tạo thành file data lưu cypress/fixtures/tableData.json */
-//       cy.get("@tableData").then((tableData) => {
-//   cy.writeFile("cypress/fixtures/tableData.json", tableData);
-// });
+      //       cy.get("@tableData").then((tableData) => {
+      //   cy.writeFile("cypress/fixtures/tableData.json", tableData);
+      // });
 
     });
   });
 });
 /*Bài 9*/
 describe("BT9", () => {
- const url = "https://practice.expandtesting.com/challenging-dom";
+  const url = "https://practice.expandtesting.com/challenging-dom";
 
   // locator nút vàng (ưu tiên class màu vàng)
   const yellowBtn = () =>
@@ -70,22 +70,95 @@ describe("BT9", () => {
       cy.url().should("include", "/challenging-dom");
     });
   });
-   });
+});
 
 /*Bài 10*/
 describe("BT10", () => {
- it.only("Cách 1- Lấy từ canvas (OCR)", () => {
-  cy.visit("https://practice.expandtesting.com/challenging-dom");
+  it("Cách 1- Lấy dataURL từ canvas rồi OCR canvas (OCR)", () => {
+    /*Chụp canvas => OCR bằng tesseract.js (đọc được mọi chữ vẽ) 
+     * Biến nội dung được vẽ trên thẻ <canvas> thành một ảnh (dạng dataURL),
+     *  sau đó dùng công nghệ OCR để nhận dạng chữ/số có trong ảnh đó. */
+    cy.visit("https://practice.expandtesting.com/challenging-dom");
 
-  cy.get("canvas")                 // canvas cuối trang
-    .should("be.visible")
-    .then(($c) => $c[0].toDataURL("image/png"))
-    .then((dataUrl) => cy.task("ocrFromBase64", dataUrl))
-    .then((text) => {
-      const num = (text.match(/\b\d+\b/) || [null])[0]; // lấy số đầu tiên
-      expect(num, "Answer number").to.match(/^\d+$/);
-      // ví dụ ra 99900
-      cy.log(`Answer: ${num}`);
+    cy.get("canvas")                 // canvas cuối trang
+      .should("be.visible")
+      .then(($c) => $c[0].toDataURL("image/png"))
+      .then((dataUrl) => cy.task("ocrFromBase64", dataUrl))
+      .then((text) => {
+        const num = (text.match(/\b\d+\b/) || [null])[0]; // lấy số đầu tiên
+        expect(num, "Answer number").to.match(/^\d+$/);
+        // Log kết quả
+        cy.log(`Answer: ${num}`);
+      });
+  });
+
+  it("Cách 2- Sử dụng onBeforeLoad on canvas", () => {
+    /**onBeforeLoad chạy TRƯỚC khi JavaScript của trang web thực thi */
+    cy.visit("https://practice.expandtesting.com/challenging-dom", {
+      onBeforeLoad(win) {
+        // lưu nơi chứa các text được vẽ lên canvas
+        win.__canvasTexts = [];//Tao tạo sẵn một cái hộp rỗng để lát nữa hứng chữ vẽ trên canvas
+        const proto = win.CanvasRenderingContext2D.prototype;//Lấy object prototype chung cho TẤT CẢ canvas 2D trên trang
+        /*CanvasRenderingContext2D làclass gốc của context 2D của <canvas>
+        Vì sao phải lấy prototype? =>>Để hook / override / spy các hàm canvas trước khi trang vẽ.
+         */
+        if (!proto?.fillText) return;
+        /*Nếu proto tồn tại =>> lấy proto.fillText
+        return: Nếu không có fillText để hook thì ko làm gì cả
+        */
+
+        const originalFillText = proto.fillText; // vẽ những gì hứng được ở trên (là lưu lại hàm vẽ chữ gốc của canvas để sau khi hook vẫn giữ nguyên hành vi vẽ.)
+
+        proto.fillText = function (text, ...rest) {
+          try {
+            win.__canvasTexts.push(String(text));
+          } catch (e) {
+            // ignore
+          }
+          return originalFillText.call(this, text, ...rest);
+        };
+      },
     });
+
+    // Đợi canvas xuất hiện (trang này có canvas)
+    cy.get("canvas", { timeout: 10000 }).should("be.visible");
+
+    // Lấy chuỗi "Answer: ...." đã bị hook lại và tách số
+    cy.window()
+      .its("__canvasTexts")
+      .should("be.an", "array")
+      .then((texts) => {
+        const answerLine = texts.find((t) => /answer\s*:/i.test(t));
+        expect(answerLine, "Found 'Answer: ...' drawn on canvas").to.be.a("string");
+
+        const number = answerLine.match(/\d+/)?.[0];
+        expect(number, "Extracted number").to.match(/^\d+$/);
+
+        // log ra kết quả để kiểm tra
+        cy.log(`Answer number: ${number}`);
+        // nếu muốn dùng lại về sau
+        cy.wrap(number).as("answerNumber");
+      });
+
+    // Ví dụ: dùng lại alias
+    cy.get("@answerNumber").then((n) => {
+      // assert demo (chỉ minh hoạ)
+      expect(String(n)).to.have.length.greaterThan(0);
+    });
+  });
+  it("Cách 3-Lấy data  by “hook + reload”", () => {
+    /*  Hook canvas kiểu “spy” bằng cy.window(). Không sử dụng OCR
+    Cách này theo dõi hành vi vẽ canvas sau khi trang đã load, 
+    không can thiệp logic gốc */
+    // Đặt thêm vào cypress/support/e2e.js: Cypress.on() =>>Đăng ký event listener toàn cục cho toàn bộ test
+    cy.visit("https://practice.expandtesting.com/challenging-dom");
+    cy.get("canvas").should("be.visible");
+
+    cy.window().its("__canvasTexts").then((texts) => {
+      const line = texts.find((t) => /answer\s*:/i.test(t));
+      const number = line?.match(/\d+/)?.[0];
+      expect(number).to.match(/^\d+$/);
+      cy.log(`Answer number: ${number}`);
+    });
+  });
 });
-   });

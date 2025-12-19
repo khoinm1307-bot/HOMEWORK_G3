@@ -1,0 +1,182 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-12-19T16:57:50.539Z",
+    "end": "2025-12-19T16:58:07.691Z",
+    "duration": 17152,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "ca50c1f9-3db1-4432-9f5a-e1f188cf6a3c",
+      "title": "",
+      "fullFile": "cypress\\e2e\\Login_page.cy.js",
+      "file": "cypress\\e2e\\Login_page.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "92c5a225-c47f-406d-a71c-b9d91516c253",
+          "title": "Basic 01 - Login (data-driven array + forEach)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": " Login page hiển thị đúng",
+              "fullTitle": "Basic 01 - Login (data-driven array + forEach)  Login page hiển thị đúng",
+              "timedOut": null,
+              "duration": 2811,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Dùng function () {}ở trên\nloginPage.visit(this.suite.url); // Lấy url từ data-driven\nloginPage.assertLoginPageVisible(); // gọi hàm kiểm tra login load đúng",
+              "err": {},
+              "uuid": "292f4071-d052-4d5e-93c6-ae35ce160eb4",
+              "parentUUID": "92c5a225-c47f-406d-a71c-b9d91516c253",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "292f4071-d052-4d5e-93c6-ae35ce160eb4"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2811,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "a4928ff0-ac1d-4738-b044-036c4f0c574d",
+          "title": "Basic 01 - Login (auto cases)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "TC1 - Login_Sucsess",
+              "fullTitle": "Basic 01 - Login (auto cases) TC1 - Login_Sucsess",
+              "timedOut": null,
+              "duration": 3930,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "loginPage2.visit(suite.url); // Mowr trang\nloginPage2.assertLoginPageVisible(); // Check load đúng trang\nloginPage2.login(tc.username, tc.password); //truyền data login=> thực hiện login\ncy.url().should(\"include\", tc.expected.urlIncludes); //check url sau đăng nhập\nloginPage2.assertFlashContains(tc.expected.messageContains); // check message thông báo\nif (tc.expected.logoutVisible) {\n  loginPage2.el.logoutLink().should(\"be.visible\"); // Những case có \"logoutVisible\": true mới chạy lệnh này\n}",
+              "err": {},
+              "uuid": "a0fb9f42-c2a3-4277-9763-bd49f4caa83f",
+              "parentUUID": "a4928ff0-ac1d-4738-b044-036c4f0c574d",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC2 - Login_Sai tên đăng nhập",
+              "fullTitle": "Basic 01 - Login (auto cases) TC2 - Login_Sai tên đăng nhập",
+              "timedOut": null,
+              "duration": 4262,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "loginPage2.visit(suite.url); // Mowr trang\nloginPage2.assertLoginPageVisible(); // Check load đúng trang\nloginPage2.login(tc.username, tc.password); //truyền data login=> thực hiện login\ncy.url().should(\"include\", tc.expected.urlIncludes); //check url sau đăng nhập\nloginPage2.assertFlashContains(tc.expected.messageContains); // check message thông báo\nif (tc.expected.logoutVisible) {\n  loginPage2.el.logoutLink().should(\"be.visible\"); // Những case có \"logoutVisible\": true mới chạy lệnh này\n}",
+              "err": {},
+              "uuid": "8567485f-9e05-4bc0-b349-aaa31a8c2a78",
+              "parentUUID": "a4928ff0-ac1d-4738-b044-036c4f0c574d",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC3 - Login_Sai tên password",
+              "fullTitle": "Basic 01 - Login (auto cases) TC3 - Login_Sai tên password",
+              "timedOut": null,
+              "duration": 3927,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "loginPage2.visit(suite.url); // Mowr trang\nloginPage2.assertLoginPageVisible(); // Check load đúng trang\nloginPage2.login(tc.username, tc.password); //truyền data login=> thực hiện login\ncy.url().should(\"include\", tc.expected.urlIncludes); //check url sau đăng nhập\nloginPage2.assertFlashContains(tc.expected.messageContains); // check message thông báo\nif (tc.expected.logoutVisible) {\n  loginPage2.el.logoutLink().should(\"be.visible\"); // Những case có \"logoutVisible\": true mới chạy lệnh này\n}",
+              "err": {},
+              "uuid": "5666d7cd-eee6-4c19-b96b-db1e07220e04",
+              "parentUUID": "a4928ff0-ac1d-4738-b044-036c4f0c574d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a0fb9f42-c2a3-4277-9763-bd49f4caa83f",
+            "8567485f-9e05-4bc0-b349-aaa31a8c2a78",
+            "5666d7cd-eee6-4c19-b96b-db1e07220e04"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 12119,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

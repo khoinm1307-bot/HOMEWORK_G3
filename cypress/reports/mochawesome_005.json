@@ -1,0 +1,226 @@
+{
+  "stats": {
+    "suites": 3,
+    "tests": 5,
+    "passes": 4,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-12-19T16:56:40.545Z",
+    "end": "2025-12-19T16:57:26.201Z",
+    "duration": 45656,
+    "testsRegistered": 5,
+    "passPercent": 80,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "51fea4ee-6105-4a47-b958-11949121b632",
+      "title": "",
+      "fullFile": "cypress\\e2e\\Challenging-DOM.cy.js",
+      "file": "cypress\\e2e\\Challenging-DOM.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "38f90bf6-fe46-49d5-866c-bf4ab9be31dc",
+          "title": "BT8",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Lấy danh sách các giá trị trong bảng",
+              "fullTitle": "BT8 Lấy danh sách các giá trị trong bảng",
+              "timedOut": null,
+              "duration": 2948,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit(\"https://practice.expandtesting.com/challenging-dom\");\n// 1) Lấy danh sách header\ncy.get(\"table thead th\").then($ths => {\n  const headers = [...$ths].map(th => th.innerText.trim());\n  // headers: [\"Lorem\",\"Ipsum\",\"Dolor\",\"Sit\",\"Amet\",\"Diceret\",\"Action\"]\n  // 2) Duyệt từng row và build array object\n  cy.get(\"table tbody tr\").then($rows => {\n    const data = [...$rows].map(row => {\n      const cells = [...row.querySelectorAll(\"td\")].map(td => td.innerText.trim());\n      // Map header -> cell thành object\n      const obj = headers.reduce((acc, h, idx) => {\n        var _cells$idx;\n        acc[h] = (_cells$idx = cells[idx]) !== null && _cells$idx !== void 0 ? _cells$idx : \"\";\n        return acc;\n      }, {});\n      return obj;\n    });\n    // 3) Wrap để dùng tiếp trong Cypress chain\n    cy.wrap(data, {\n      log: false\n    }).as(\"tableData\");\n  });\n});\n// Ví dụ dùng tiếp: in ra / assert\ncy.get(\"@tableData\").then(tableData => {\n  cy.log(JSON.stringify(tableData, null, 2));\n  expect(tableData).to.have.length.greaterThan(0);\n  expect(tableData[0]).to.have.all.keys(\"Lorem\", \"Ipsum\", \"Dolor\", \"Sit\", \"Amet\", \"Diceret\", \"Action\");\n  /* Đoạn này mình dùng để ghi lại kết quả, sau khi chạy thì tạo thành file data lưu cypress/fixtures/tableData.json */\n  //       cy.get(\"@tableData\").then((tableData) => {\n  //   cy.writeFile(\"cypress/fixtures/tableData.json\", tableData);\n  // });\n});",
+              "err": {},
+              "uuid": "36a34e7b-c713-4631-89cf-b76be5be9041",
+              "parentUUID": "38f90bf6-fe46-49d5-866c-bf4ab9be31dc",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "36a34e7b-c713-4631-89cf-b76be5be9041"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2948,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "9db434dc-6247-4592-aa8a-3392bab2a77d",
+          "title": "BT9",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Click yellow 10 times, wait redirect each time",
+              "fullTitle": "BT9 Click yellow 10 times, wait redirect each time",
+              "timedOut": null,
+              "duration": 15315,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "Cypress._.times(10, () => {\n  yellowBtn().should(\"be.visible\").click();\n  // chờ trang reload xong (redirect/reload)\n  cy.wait(\"@reloadPage\");\n  // xác nhận trang đã load lại (không dùng equal)\n  cy.get(\"h1\").should(\"contain\", \"Challenging DOM\");\n  cy.url().should(\"include\", \"/challenging-dom\");\n});",
+              "err": {},
+              "uuid": "ff6e1622-bcb3-4338-bf98-69df254e5880",
+              "parentUUID": "9db434dc-6247-4592-aa8a-3392bab2a77d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "ff6e1622-bcb3-4338-bf98-69df254e5880"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 15315,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "38acbb1c-6380-4c46-b3ea-a2c2e6d7b77d",
+          "title": "BT10",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Cách 1- Lấy dataURL từ canvas rồi OCR canvas (OCR)",
+              "fullTitle": "BT10 Cách 1- Lấy dataURL từ canvas rồi OCR canvas (OCR)",
+              "timedOut": null,
+              "duration": 1836,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "/*Chụp canvas => OCR bằng tesseract.js (đọc được mọi chữ vẽ) \n * Biến nội dung được vẽ trên thẻ <canvas> thành một ảnh (dạng dataURL),\n *  sau đó dùng công nghệ OCR để nhận dạng chữ/số có trong ảnh đó. */\ncy.visit(\"https://practice.expandtesting.com/challenging-dom\");\ncy.get(\"canvas\") // canvas cuối trang\n.should(\"be.visible\").then($c => $c[0].toDataURL(\"image/png\")).then(dataUrl => cy.task(\"ocrFromBase64\", dataUrl)).then(text => {\n  const num = (text.match(/\\b\\d+\\b/) || [null])[0]; // lấy số đầu tiên\n  expect(num, \"Answer number\").to.match(/^\\d+$/);\n  // Log kết quả\n  cy.log(`Answer: ${num}`);\n});",
+              "err": {
+                "message": "CypressError: `cy.task('ocrFromBase64')` failed with the following error:\n\nThe 'task' event has not been registered in the setupNodeEvents method. You must register it before using cy.task()\n\nFix this in your setupNodeEvents method here:\nD:\\Gr3\\cypress.config.js\n\nhttps://on.cypress.io/api/task",
+                "estack": "CypressError: `cy.task('ocrFromBase64')` failed with the following error:\n\nThe 'task' event has not been registered in the setupNodeEvents method. You must register it before using cy.task()\n\nFix this in your setupNodeEvents method here:\nD:\\Gr3\\cypress.config.js\n\nhttps://on.cypress.io/api/task\n    at <unknown> (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:138188:72)\n    at tryCatcher (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise._settlePromiseFromHandler (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:1489:31)\n    at Promise._settlePromise (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:1546:18)\n    at Promise._settlePromise0 (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:1591:10)\n    at Promise._settlePromises (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:1667:18)\n    at _drainQueueStep (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:2377:12)\n    at _drainQueue (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:2370:9)\n    at Async._drainQueues (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:2386:5)\n    at Async.drainQueues (https://practice.expandtesting.com/__cypress/runner/cypress_runner.js:2256:14)",
+                "diff": null
+              },
+              "uuid": "2ba78774-0f63-4055-93e5-369d6bed0578",
+              "parentUUID": "38acbb1c-6380-4c46-b3ea-a2c2e6d7b77d",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Cách 2- Sử dụng onBeforeLoad on canvas",
+              "fullTitle": "BT10 Cách 2- Sử dụng onBeforeLoad on canvas",
+              "timedOut": null,
+              "duration": 1840,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "/**onBeforeLoad chạy TRƯỚC khi JavaScript của trang web thực thi */\ncy.visit(\"https://practice.expandtesting.com/challenging-dom\", {\n  onBeforeLoad(win) {\n    // lưu nơi chứa các text được vẽ lên canvas\n    win.__canvasTexts = []; //Tao tạo sẵn một cái hộp rỗng để lát nữa hứng chữ vẽ trên canvas\n    const proto = win.CanvasRenderingContext2D.prototype; //Lấy object prototype chung cho TẤT CẢ canvas 2D trên trang\n    /*CanvasRenderingContext2D làclass gốc của context 2D của <canvas>\n    Vì sao phải lấy prototype? =>>Để hook / override / spy các hàm canvas trước khi trang vẽ.\n     */\n    if (!(proto !== null && proto !== void 0 && proto.fillText)) return;\n    /*Nếu proto tồn tại =>> lấy proto.fillText\n    return: Nếu không có fillText để hook thì ko làm gì cả\n    */\n    const originalFillText = proto.fillText; // vẽ những gì hứng được ở trên (là lưu lại hàm vẽ chữ gốc của canvas để sau khi hook vẫn giữ nguyên hành vi vẽ.)\n    proto.fillText = function (text, ...rest) {\n      try {\n        win.__canvasTexts.push(String(text));\n      } catch (e) {\n        // ignore\n      }\n      return originalFillText.call(this, text, ...rest);\n    };\n  }\n});\n// Đợi canvas xuất hiện (trang này có canvas)\ncy.get(\"canvas\", {\n  timeout: 10000\n}).should(\"be.visible\");\n// Lấy chuỗi \"Answer: ....\" đã bị hook lại và tách số\ncy.window().its(\"__canvasTexts\").should(\"be.an\", \"array\").then(texts => {\n  var _answerLine$match;\n  const answerLine = texts.find(t => /answer\\s*:/i.test(t));\n  expect(answerLine, \"Found 'Answer: ...' drawn on canvas\").to.be.a(\"string\");\n  const number = (_answerLine$match = answerLine.match(/\\d+/)) === null || _answerLine$match === void 0 ? void 0 : _answerLine$match[0];\n  expect(number, \"Extracted number\").to.match(/^\\d+$/);\n  // log ra kết quả để kiểm tra\n  cy.log(`Answer number: ${number}`);\n  // nếu muốn dùng lại về sau\n  cy.wrap(number).as(\"answerNumber\");\n});\n// Ví dụ: dùng lại alias\ncy.get(\"@answerNumber\").then(n => {\n  // assert demo (chỉ minh hoạ)\n  expect(String(n)).to.have.length.greaterThan(0);\n});",
+              "err": {},
+              "uuid": "50cc0c25-3ab6-4a8a-9468-61f715f96c73",
+              "parentUUID": "38acbb1c-6380-4c46-b3ea-a2c2e6d7b77d",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Cách 3-Lấy data  by “hook + reload”",
+              "fullTitle": "BT10 Cách 3-Lấy data  by “hook + reload”",
+              "timedOut": null,
+              "duration": 1426,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "/*  Hook canvas kiểu “spy” bằng cy.window(). Không sử dụng OCR\nCách này theo dõi hành vi vẽ canvas sau khi trang đã load, \nkhông can thiệp logic gốc */\n// Đặt thêm vào cypress/support/e2e.js: Cypress.on() =>>Đăng ký event listener toàn cục cho toàn bộ test\ncy.visit(\"https://practice.expandtesting.com/challenging-dom\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.window().its(\"__canvasTexts\").then(texts => {\n  var _line$match;\n  const line = texts.find(t => /answer\\s*:/i.test(t));\n  const number = line === null || line === void 0 || (_line$match = line.match(/\\d+/)) === null || _line$match === void 0 ? void 0 : _line$match[0];\n  expect(number).to.match(/^\\d+$/);\n  cy.log(`Answer number: ${number}`);\n});",
+              "err": {},
+              "uuid": "3b89825b-566c-4b7f-a9c5-14e172f35cb9",
+              "parentUUID": "38acbb1c-6380-4c46-b3ea-a2c2e6d7b77d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "50cc0c25-3ab6-4a8a-9468-61f715f96c73",
+            "3b89825b-566c-4b7f-a9c5-14e172f35cb9"
+          ],
+          "failures": [
+            "2ba78774-0f63-4055-93e5-369d6bed0578"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 5102,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

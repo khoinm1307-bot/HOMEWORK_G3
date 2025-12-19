@@ -51,18 +51,13 @@ describe("Basic 01 - Login (auto cases)", () => {
 
       loginPage2.visit(suite.url);// Mowr trang
       loginPage2.assertLoginPageVisible();// Check load đúng trang
-
       loginPage2.login(tc.username, tc.password);//truyền data login=> thực hiện login
-
       cy.url().should("include", tc.expected.urlIncludes); //check url sau đăng nhập
       loginPage2.assertFlashContains(tc.expected.messageContains); // check message thông báo
-
       if (tc.expected.logoutVisible) {
         loginPage2.el.logoutLink().should("be.visible");// Những case có "logoutVisible": true mới chạy lệnh này
       }
     });
-
   });
-
 });
 

@@ -1,0 +1,143 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-12-19T16:54:05.082Z",
+    "end": "2025-12-19T16:54:15.092Z",
+    "duration": 10010,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "17c9fc3c-a617-43b4-b6bd-6fd496bd4de5",
+      "title": "",
+      "fullFile": "cypress\\e2e\\BT11.cy.js",
+      "file": "cypress\\e2e\\BT11.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "f97a81d8-20b9-42a8-8a2d-e5b3ac522a76",
+          "title": "JS Dialogs handling",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "alert: click OK",
+              "fullTitle": "JS Dialogs handling alert: click OK",
+              "timedOut": null,
+              "duration": 3870,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// handle alert\ncy.on(\"window:alert\", text => {\n  expect(text).to.contain(\"I am a Js Alert\"); // nếu có message\n});\n/*Giải thích\ncy.on(...):Đăng ký event listener trong Cypress.Lắng nghe sự kiện của trình duyệt\nwindow:alert\": Tên sự kiện đặc biệt của Cypress\n */\ncy.get(\"#js-alert\").click();\n// alert auto accepted",
+              "err": {},
+              "uuid": "d7414ce8-177b-4015-a213-932e988db8c1",
+              "parentUUID": "f97a81d8-20b9-42a8-8a2d-e5b3ac522a76",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "prompt: enter text and accept",
+              "fullTitle": "JS Dialogs handling prompt: enter text and accept",
+              "timedOut": null,
+              "duration": 1990,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const promptInput = \"Hello Cypress\";\ncy.window().then(win => {\n  cy.stub(win, \"prompt\").returns(promptInput);\n});\ncy.get(\"#js-prompt\").click();\n// sau khi xử lý prompt, kiểm tra kết quả\ncy.get(\"#dialog-response\").should(\"contain.text\", promptInput);",
+              "err": {},
+              "uuid": "1b0a5e4f-78c5-49dc-aa4f-22d260a4b9e6",
+              "parentUUID": "f97a81d8-20b9-42a8-8a2d-e5b3ac522a76",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "confirm: click Cancel",
+              "fullTitle": "JS Dialogs handling confirm: click Cancel",
+              "timedOut": null,
+              "duration": 1241,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.on(\"window:confirm\", text => {\n  expect(text).to.contain(\"I am a Js Confirm\");\n  return false; // Cancel\n});\ncy.get(\"#js-confirm\").click();\n// Cancel → có thể text phản hồi là \"Cancel\"\ncy.get(\"#dialog-response\").should(\"contain.text\", \"Cancel\");",
+              "err": {},
+              "uuid": "23af4b48-47dd-41ad-b8d6-cdb6e801e368",
+              "parentUUID": "f97a81d8-20b9-42a8-8a2d-e5b3ac522a76",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "d7414ce8-177b-4015-a213-932e988db8c1",
+            "1b0a5e4f-78c5-49dc-aa4f-22d260a4b9e6",
+            "23af4b48-47dd-41ad-b8d6-cdb6e801e368"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 7101,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

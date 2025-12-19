@@ -23,5 +23,17 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 import '@4tw/cypress-drag-drop';
 import "@testing-library/cypress/add-commands";
 import "cypress-xpath";
+ // Cho cách 3 bài 10
+  Cypress.on("window:before:load", (win) => {
+  win.__canvasTexts = [];
 
+  const proto = win.CanvasRenderingContext2D?.prototype;
+  if (!proto?.fillText) return;
+
+  const original = proto.fillText;
+  proto.fillText = function (text, ...rest) {
+    win.__canvasTexts.push(String(text));
+    return original.call(this, text, ...rest);
+  };
+});
 

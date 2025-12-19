@@ -1,0 +1,105 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-12-19T16:54:29.970Z",
+    "end": "2025-12-19T16:54:36.090Z",
+    "duration": 6120,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "de65aa3c-b12d-4dec-97e1-8845967ccbc0",
+      "title": "",
+      "fullFile": "cypress\\e2e\\BT5-6-7.cy.js",
+      "file": "cypress\\e2e\\BT5-6-7.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "fb4de1bd-24fa-443a-b038-621a2ba88a4d",
+          "title": "Cypress inject JS",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Shadow DOM ",
+              "fullTitle": "Cypress inject JS Shadow DOM ",
+              "timedOut": null,
+              "duration": 3570,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('https://practice.expandtesting.com/shadowdom');\n// 1 Stub alert để khỏi bật popup thật\ncy.window().then(win => {\n  cy.stub(win, 'alert').as('alert');\n  // 2 Tương đương chạy ở console: $(\"#my-btn\").on(\"click\", () => {alert(\"OK\");});\n  // (dùng JS thuần cho chắc, vì jQuery có thể không truy cập được shadow)\n  const host = win.document.querySelector('#shadow-host'); // chỉnh lại đúng selector host\n  const root = host.shadowRoot;\n  const btn = root.querySelector('#my-btn');\n  btn.addEventListener('click', () => win.alert('OK'));\n});\n// 3 Click nút \"This button is inside a Shadow DOM.\"\ncy.get('#shadow-host').shadow().contains('button', 'This button is inside a Shadow DOM.').click();\n// 4 Xác minh alert hiển thị \"OK\"\ncy.get('@alert').should('have.been.calledWith', 'OK');",
+              "err": {},
+              "uuid": "04d9f450-fd5a-4a0d-8ed9-1991159a80ec",
+              "parentUUID": "fb4de1bd-24fa-443a-b038-621a2ba88a4d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "04d9f450-fd5a-4a0d-8ed9-1991159a80ec"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 3570,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

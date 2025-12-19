@@ -1,0 +1,105 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-12-19T16:57:28.402Z",
+    "end": "2025-12-19T16:57:32.827Z",
+    "duration": 4425,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "90b91556-67e5-4e2e-8e1c-b72414567957",
+      "title": "",
+      "fullFile": "cypress\\e2e\\Drag_Drop.cy.js",
+      "file": "cypress\\e2e\\Drag_Drop.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "3d4274a5-c68a-439c-87d2-0e757cebdace",
+          "title": "Drag and Drop",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Kéo 3 hình tròn vào target theo thứ tự Đỏ - Xanh Lam - Xanh Lá",
+              "fullTitle": "Drag and Drop Kéo 3 hình tròn vào target theo thứ tự Đỏ - Xanh Lam - Xanh Lá",
+              "timedOut": null,
+              "duration": 2667,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit(\"https://practice.expandtesting.com/drag-and-drop-circles\");\nconst order = [\".red\", \".blue\", \".green\"];\nfor (let i = 0; i < order.length; i++) {\n  cy.get(order[i], {\n    timeout: 10000\n  }).then($item => {\n    const dataTransfer = new DataTransfer();\n    cy.wrap($item).trigger(\"dragstart\", {\n      dataTransfer\n    });\n    cy.get(\"#target\").trigger(\"dragover\", {\n      dataTransfer\n    }).trigger(\"drop\", {\n      dataTransfer\n    });\n  });\n}",
+              "err": {},
+              "uuid": "ab63ac11-d3db-489f-8ba9-1f494d4acefa",
+              "parentUUID": "3d4274a5-c68a-439c-87d2-0e757cebdace",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "ab63ac11-d3db-489f-8ba9-1f494d4acefa"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2667,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

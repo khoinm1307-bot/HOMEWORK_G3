@@ -1,0 +1,109 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-12-19T16:54:44.482Z",
+    "end": "2025-12-19T16:56:38.479Z",
+    "duration": 113997,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "463abaa0-88ea-4565-a870-1168680cf05d",
+      "title": "",
+      "fullFile": "cypress\\e2e\\Bt16.cy.js",
+      "file": "cypress\\e2e\\Bt16.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "bdd59853-a6e2-439e-bda2-dec4606207b6",
+          "title": "Notes App - Register -> Login -> Add Note -> Verify -> Delete",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "E2E Notes",
+              "fullTitle": "Notes App - Register -> Login -> Add Note -> Verify -> Delete E2E Notes",
+              "timedOut": null,
+              "duration": 10592,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// =====  Đăng ký =====\ncy.visit(`${base}/register`);\n// (Interceptors) - pattern rộng để đỡ lệ thuộc endpoint cụ thể\ncy.intercept(\"POST\", \"**/register**\").as(\"register\");\ncy.intercept(\"POST\", \"**/login**\").as(\"login\");\ncy.intercept(\"POST\", \"**/notes**\").as(\"createNote\");\ncy.intercept(\"DELETE\", \"**/notes/**\").as(\"deleteNote\");\n// Điền form register (ưu tiên label/placeholder)\ncy.contains(/register/i).should(\"be.visible\"); // page loaded\ncy.get('input[name=\"name\"], input[placeholder*=\"name\" i], input[aria-label*=\"name\" i]').first().clear().type(user.name);\ncy.get('input[type=\"email\"], input[name=\"email\"], input[placeholder*=\"email\" i]').first().clear().type(user.email);\ncy.get('input[type=\"password\"], input[name=\"password\"], input[placeholder*=\"password\" i]').first().clear().type(user.password);\n// confirm password nếu có\ncy.get('input[name*=\"confirm\" i], input[placeholder*=\"confirm\" i]').then($els => {\n  if ($els.length) cy.wrap($els.first()).clear().type(user.password);\n});\ncy.contains(\"button\", /register/i).click();\n// Nếu endpoint match được thì chờ request, không thì bỏ qua (để test không chết vì alias không khớp)\ncy.wait(\"@register\", {\n  timeout: 20000\n}).its(\"response.statusCode\").should(\"be.oneOf\", [200, 201, 204]);\n// =====  Đăng nhập =====\n// Nhiều app register xong tự chuyển login; nếu không thì ta visit thẳng\ncy.location(\"href\").then(href => {\n  if (!href.includes(\"/login\")) cy.visit(`${base}/login`);\n});\ncy.get('input[type=\"email\"], input[name=\"email\"], input[placeholder*=\"email\" i]').first().clear().type(user.email);\ncy.get('input[type=\"password\"], input[name=\"password\"], input[placeholder*=\"password\" i]').first().clear().type(user.password);\ncy.contains(\"button\", /login|sign in/i).click();\ncy.wait(\"@login\", {\n  timeout: 20000\n}).its(\"response.statusCode\").should(\"be.oneOf\", [200, 201, 204]);\n// =====Thêm mới ghi chú =====\n// Sau login thường vào /notes hoặc /app\ncy.contains(/my notes|notes/i, {\n  timeout: 20000\n}).should(\"be.visible\");\n// Click nút Add (fallback nhiều khả năng)\ncy.contains(\"button\", /add note|new note|add/i).click({\n  force: true\n});\n// Điền form note\ncy.get('input[name=\"title\"], input[placeholder*=\"title\" i], input[aria-label*=\"title\" i]').first().clear().type(note.title);\ncy.get('textarea[name=\"description\"], textarea[placeholder*=\"description\" i], textarea[aria-label*=\"description\" i], textarea').first().clear().type(note.description);\n// cy.contains(\"button\", /save|create|add/i).click({ force: true });\n//nút Create  đang bị che bởi một lớp overlay có z-index quá lớn\ncy.get(\"body\").then($b => {\n  if ($b.find(\"div.__cypress-highlight\").length) {\n    cy.get(\"div.__cypress-highlight\").should(\"not.be.visible\");\n  }\n});\ncy.get('[data-testid=\"add-new-note\"]').scrollIntoView().click();\n// Chờ create note (nếu match được)\ncy.wait(\"@createNote\", {\n  timeout: 20000\n}).its(\"response.statusCode\").should(\"be.oneOf\", [200, 201, 204]);\n// ===== 4) Kiểm tra note đã tồn tại =====\n// Tìm card/row chứa đúng title\ncy.contains(note.title, {\n  timeout: 20000\n}).should(\"be.visible\");\n// == Xoá ghi chú ==\n// Scope đúng vào “card” chứa title rồi bấm delete trong đó\ncy.contains(note.title).closest('[data-testid*=\"note\" i], .note, .card, li, article, div').within(() => {\n  // ưu tiên nút có text Delete, nếu không có thì thử icon/aria-label/data-testid\n  cy.contains(\"button\", /delete|remove/i).then($btn => {\n    if ($btn.length) {\n      cy.wrap($btn.first()).click({\n        force: true\n      });\n    } else {\n      cy.get('button[aria-label*=\"delete\" i], button[data-testid*=\"delete\" i], [title*=\"delete\" i]').first().click({\n        force: true\n      });\n    }\n  });\n});\n// Có app sẽ hỏi confirm\ncy.contains(\"button\", /yes|confirm|ok/i).then($c => {\n  if ($c.length) cy.wrap($c.first()).click();\n});\n// Chờ delete request (nếu match được)\ncy.wait(\"@deleteNote\", {\n  timeout: 20000\n}).its(\"response.statusCode\").should(\"be.oneOf\", [200, 204]);\n// Assert note biến mất\ncy.contains(note.title).should(\"not.exist\");",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: expected 409 to be one of [ 200, 201, 204 ]",
+                "estack": "AssertionError: Timed out retrying after 4000ms: expected 409 to be one of [ 200, 201, 204 ]\n    at Context.eval (webpack://gr3/./cypress/e2e/Bt16.cy.js:54:72)",
+                "diff": "- 409\n+ [ 200, 201, 204 ]\n"
+              },
+              "uuid": "22f2f413-a437-4a92-b636-38b7b4cbe5f7",
+              "parentUUID": "bdd59853-a6e2-439e-bda2-dec4606207b6",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "22f2f413-a437-4a92-b636-38b7b4cbe5f7"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 10592,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

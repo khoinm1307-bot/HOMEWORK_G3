@@ -33,18 +33,16 @@ describe("Form Validation page", () => {
 
         // submit để hiển thị validation
         cy.get("button[type='submit']").click();
-
-
         // assert message lỗi
-        cy.contains("Please provide your Contact number.")
+        // cy.contains("Please provide your Contact number.")
+        //     .should("be.visible");
+        cy.get("#validationCustom05")
+            .parent()
+            .find(".invalid-feedback")
+            .should("contain.text", "Please provide your Contact number.")
             .should("be.visible");
 
-        // Chưa check được boder ??????????
-        // cy.get("input[name='contactnumber']")
-        //     .should("have.class", "required")
-        //     .and("have.css", "background-image")
-        //     .and("not.eq", "none");
-
+        // Chưa check được boder/icon-eror.  ?????????? Đã nhờ trợ giúp nhưng hông được
         /* =========================
            - Nhập đúng định dạng
            - Lỗi biến mất
@@ -63,7 +61,7 @@ describe("Form Validation page", () => {
     it("Validation PickupDate", () => {
         cy.get('input[name="pickupdate"]')
             .clear()
-            .type("2025-08-17")// vì trình duyệt KHÔNG nhận format dd-mm-yyyy khi gõ bằng automation. Nó thường chỉ nhận ISO:YYYY-MM-DD
+            .type("2025-08-17")//
             .blur();
 
         cy.get('input[name="pickupdate"]')

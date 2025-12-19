@@ -1,0 +1,86 @@
+{
+  "stats": {
+    "suites": 0,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-12-19T16:54:38.250Z",
+    "end": "2025-12-19T16:54:42.528Z",
+    "duration": 4278,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "3b67b839-0c54-45a0-ab39-8be3201e2c99",
+      "title": "",
+      "fullFile": "cypress\\e2e\\BT7.cy.js",
+      "file": "cypress\\e2e\\BT7.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [
+        {
+          "title": "Color Wheel - Quay và chọn đúng màu ngay lần đầu",
+          "fullTitle": "Color Wheel - Quay và chọn đúng màu ngay lần đầu",
+          "timedOut": null,
+          "duration": 2611,
+          "state": "passed",
+          "speed": "fast",
+          "pass": true,
+          "fail": false,
+          "pending": false,
+          "context": null,
+          "code": "cy.visit(\"https://practice.expandtesting.com/color-wheel\");\n// Click Play Game để quay\ncy.contains(\"button, a\", /play game/i).click();\n//  Chờ wheel dừng (màu tại mũi tên ổn định)\nwaitWheelStopAndGetColorAtArrow().then(targetRgb => {\n  // Lấy tất cả buttons đáp án màu (lọc bỏ Play/Reset)\n  cy.get(\"button\").filter((_, el) => {\n    const t = (el.innerText || \"\").trim();\n    return t.length > 0 && !/play game/i.test(t) && !/reset game/i.test(t);\n  }).then($btns => {\n    const buttons = [...$btns];\n    // Đọc background-color từng nút -> match gần nhất với targetRgb\n    const parsed = buttons.map(btn => {\n      const bg = getComputedStyle(btn).backgroundColor; // \"rgb(r,g,b)\" hoặc \"rgba(...)\"\n      const rgb = parseCssRgb(bg);\n      if (!rgb) return null;\n      return {\n        btn,\n        rgb,\n        text: (btn.innerText || \"\").trim()\n      };\n    }).filter(Boolean);\n    expect(parsed.length, \"Có danh sách nút màu\").to.be.greaterThan(0);\n    const best = parsed.map(x => _objectSpread(_objectSpread({}, x), {}, {\n      d: colorDistance(x.rgb, targetRgb)\n    })).sort((a, b) => a.d - b.d)[0];\n    cy.wrap(best.btn).click();\n    //  Assert kết quả (tùy UI, mình kiểm tra kiểu \"Correct\"/\"Success\")\n    cy.contains(/correct|success|well done|great/i).should(\"be.visible\");\n    cy.log(`Target RGB: ${targetRgb.join(\",\")} -> Clicked: ${best.text}`);\n  });\n});\n// ===== Helpers =====\nfunction waitWheelStopAndGetColorAtArrow() {\n  // Lấy pixel ở vị trí đầu mũi tên (thường nằm phía trên giữa canvas)\n  // Nếu UI của bạn khác, chỉnh offset: x = w/2, y = 5..15\n  const sample = () => cy.get(\"canvas\").then($c => {\n    const canvas = $c[0];\n    const ctx = canvas.getContext(\"2d\");\n    const w = canvas.width;\n    const h = canvas.height;\n    // giả định mũi tên trỏ vào mép trên của vòng tròn (giữa trên)\n    const x = Math.floor(w / 2);\n    const y = Math.floor(h * 0.08); // ~8% chiều cao từ trên xuống\n    const data = ctx.getImageData(x, y, 1, 1).data; // [r,g,b,a]\n    return [data[0], data[1], data[2]];\n  });\n  // poll đến khi 3 lần liên tiếp giống nhau (wheel đã dừng)\n  return sample().then(c1 => {\n    return cy.wait(250).then(() => sample().then(c2 => {\n      return cy.wait(250).then(() => sample().then(c3 => {\n        const stable = colorDistance(c1, c2) < 6 && colorDistance(c2, c3) < 6; // ngưỡng nhỏ\n        if (stable) return c3;\n        // chưa ổn định -> đợi thêm rồi thử lại (đệ quy)\n        return cy.wait(300).then(() => waitWheelStopAndGetColorAtArrow());\n      }));\n    }));\n  });\n}\nfunction parseCssRgb(css) {\n  // \"rgb(12, 34, 56)\" hoặc \"rgba(12,34,56,1)\"\n  const m = css.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/i);\n  if (!m) return null;\n  return [Number(m[1]), Number(m[2]), Number(m[3])];\n}\nfunction colorDistance(a, b) {\n  // khoảng cách Euclidean trong RGB\n  const dr = a[0] - b[0];\n  const dg = a[1] - b[1];\n  const db = a[2] - b[2];\n  return Math.sqrt(dr * dr + dg * dg + db * db);\n}",
+          "err": {},
+          "uuid": "3037dcc8-4ea3-4b10-80b5-cb0dc7e0b46d",
+          "parentUUID": "3b67b839-0c54-45a0-ab39-8be3201e2c99",
+          "isHook": false,
+          "skipped": false
+        }
+      ],
+      "suites": [],
+      "passes": [
+        "3037dcc8-4ea3-4b10-80b5-cb0dc7e0b46d"
+      ],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 2611,
+      "root": true,
+      "rootEmpty": false,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
