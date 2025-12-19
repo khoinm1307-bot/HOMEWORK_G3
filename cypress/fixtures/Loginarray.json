@@ -1,0 +1,36 @@
+{
+  "url": "https://practice.expandtesting.com/login",
+  "cases": [
+    {
+      "id": "TC1",
+      "title": "Login_Sucsess",
+      "username": "practice",
+      "password": "SuperSecretPassword!",
+      "expected": {
+        "urlIncludes": "/secure",
+        "messageContains": "You logged into a secure area!",
+        "logoutVisible": true
+      }
+    },
+    {
+      "id": "TC2",
+      "title": "Login_Sai tên đăng nhập",
+      "username": "Worngname",
+      "password": "SuperSecretPassword!",
+      "expected": {
+        "urlIncludes": "/login",
+        "messageContains": "Your username is invalid!"
+      }
+    },
+    {
+      "id": "TC3",
+      "title": "Login_Sai tên password",
+      "username": "practice",
+      "password": "SuperSecretPassword",
+      "expected": {
+        "urlIncludes": "/login",
+        "messageContains": "Your password is invalid!"
+      }
+    }
+    ]
+}
