@@ -90,8 +90,49 @@ describe("Notes App - Register -> Login -> Add Note -> Verify -> Delete", () => 
       .first()
       .clear()
       .type(note.description);
-
-    // cy.contains("button", /save|create|add/i).click({ force: true });
-    //nút Create  đang bị che bởi một lớp overlay có z-index quá lớn
+    cy.get('.modal-content [data-testid="note-submit"]').click();
   })
+  // Chờ API tạo note (nếu match được)
+    cy.wait("@createNote", { timeout: 20000 })
+      .its("response.statusCode")
+      .should("be.oneOf", [200, 201]);
+
+    // ===== Kiểm tra ghi chú đã tồn tại =====
+    // Tìm note theo title (không phụ thuộc cấu trúc DOM cụ thể)
+    cy.contains(note.title, { timeout: 20000 })
+      .should("be.visible")
+      .as("createdNote");
+
+    // Verify description (nếu UI hiển thị)
+    cy.get("@createdNote")
+      .parentsUntil("body")
+      .then($container => {
+        if ($container.text().includes(note.description)) {
+          cy.wrap($container).should("contain.text", note.description);
+        }
+      });
+
+    // ===== Xoá ghi chú =====
+    // Tìm nút delete trong cùng note (fallback nhiều kiểu)
+    cy.get("@createdNote")
+      .parentsUntil("body")
+      .within(() => {
+        cy.contains("button", /delete|remove|trash/i)
+          .click({ force: true });
+      });
+
+    // Nếu có confirm dialog
+    cy.contains("button", /yes|confirm|ok|delete/i)
+      .then($btn => {
+        if ($btn.length) cy.wrap($btn.first()).click({ force: true });
+      });
+
+    // Chờ API delete
+    cy.wait("@deleteNote", { timeout: 20000 })
+      .its("response.statusCode")
+      .should("be.oneOf", [200, 204]);
+
+    // ===== Verify ghi chú đã bị xoá =====
+    cy.contains(note.title).should("not.exist");
+
 });

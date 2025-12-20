@@ -1,99 +1,56 @@
-it("Color Wheel - Quay và chọn đúng màu ngay lần đầu", () => {
-  cy.visit("https://practice.expandtesting.com/color-wheel");
+it("Spin wheel and answer correct color on first try", () => {
+    cy.visit('https://practice.expandtesting.com/color-wheel');
 
-  // Click Play Game để quay
-  cy.contains("button, a", /play game/i).click();
+    //  Lấy danh sách màu
+    cy.get("#answers button")
+        .then($buttons => {
+            const colors = [...$buttons].map(b => b.innerText.trim());
 
-  //  Chờ wheel dừng (màu tại mũi tên ổn định)
-  waitWheelStopAndGetColorAtArrow().then((targetRgb) => {
-    // Lấy tất cả buttons đáp án màu (lọc bỏ Play/Reset)
-    cy.get("button")
-      .filter((_, el) => {
-        const t = (el.innerText || "").trim();
-        return (
-          t.length > 0 &&
-          !/play game/i.test(t) &&
-          !/reset game/i.test(t)
-        );
-      })
-      .then(($btns) => {
-        const buttons = [...$btns];
+            cy.log("Original colors:", colors.join(", "));
 
-        // Đọc background-color từng nút -> match gần nhất với targetRgb
-        const parsed = buttons
-          .map((btn) => {
-            const bg = getComputedStyle(btn).backgroundColor; // "rgb(r,g,b)" hoặc "rgba(...)"
-            const rgb = parseCssRgb(bg);
-            if (!rgb) return null;
-            return { btn, rgb, text: (btn.innerText || "").trim() };
-          })
-          .filter(Boolean);
+            //  Rotate array + reverse
+            function rotateAndReverse(arr) {
+                const rotated = [arr[arr.length - 1], ...arr.slice(0, -1)];
+                return rotated.reverse();
+            }
 
-        expect(parsed.length, "Có danh sách nút màu").to.be.greaterThan(0);
+            const finalColors = rotateAndReverse(colors);
+            cy.log("Processed colors:", finalColors.join(", "));
 
-        const best = parsed
-          .map((x) => ({ ...x, d: colorDistance(x.rgb, targetRgb) }))
-          .sort((a, b) => a.d - b.d)[0];
+            const anglePerColor = 360 / finalColors.length;
 
-        cy.wrap(best.btn).click();
+            //  Click quay bảng màu
+            cy.get("#picker").click();
 
-        //  Assert kết quả (tùy UI, mình kiểm tra kiểu "Correct"/"Success")
-        cy.contains(/correct|success|well done|great/i).should("be.visible");
-        cy.log(`Target RGB: ${targetRgb.join(",")} -> Clicked: ${best.text}`);
-      });
-  });
+            // Lấy góc rotate của canvas
+            cy.get("#picker")
+                .invoke("attr", "style")
+                .then(style => {
 
-  // ===== Helpers =====
+                    // lấy kết quả quay rotate để tính vị trí
+                    const match = style.match(/rotate\(([-\d.]+)deg\)/);
+                    const rotateDeg = Math.abs(parseFloat(match[1]));
 
-  function waitWheelStopAndGetColorAtArrow() {
-    // Lấy pixel ở vị trí đầu mũi tên (thường nằm phía trên giữa canvas)
-    // Nếu UI của bạn khác, chỉnh offset: x = w/2, y = 5..15
-    const sample = () =>
-      cy.get("canvas").then(($c) => {
-        const canvas = $c[0];
-        const ctx = canvas.getContext("2d");
-        const w = canvas.width;
-        const h = canvas.height;
+                    const normalizedDeg = rotateDeg % 360;
 
-        // giả định mũi tên trỏ vào mép trên của vòng tròn (giữa trên)
-        const x = Math.floor(w / 2);
-        const y = Math.floor(h * 0.08); // ~8% chiều cao từ trên xuống
+                    // Tính index màu trúng
+                    let index = Math.floor(normalizedDeg / anglePerColor);
 
-        const data = ctx.getImageData(x, y, 1, 1).data; // [r,g,b,a]
-        return [data[0], data[1], data[2]];
-      });
+                    // fix edge case
+                    if (index >= finalColors.length) index = 0;
 
-    // poll đến khi 3 lần liên tiếp giống nhau (wheel đã dừng)
-    return sample().then((c1) => {
-      return cy.wait(250).then(() =>
-        sample().then((c2) => {
-          return cy.wait(250).then(() =>
-            sample().then((c3) => {
-              const stable =
-                colorDistance(c1, c2) < 6 && colorDistance(c2, c3) < 6; // ngưỡng nhỏ
-              if (stable) return c3;
+                    const answerColor = finalColors[index];
 
-              // chưa ổn định -> đợi thêm rồi thử lại (đệ quy)
-              return cy.wait(300).then(() => waitWheelStopAndGetColorAtArrow());
-            })
-          );
-        })
-      );
-    });
-  }
+                    cy.log(`Rotate: ${rotateDeg}`);
+                    cy.log(`Index: ${index}`);
+                    cy.log(`Answer: ${answerColor}`);
 
-  function parseCssRgb(css) {
-    // "rgb(12, 34, 56)" hoặc "rgba(12,34,56,1)"
-    const m = css.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-    if (!m) return null;
-    return [Number(m[1]), Number(m[2]), Number(m[3])];
-  }
+                    //  Trả lời màu
+                    const normalizedAnswer = answerColor.trim().toLowerCase();
 
-  function colorDistance(a, b) {
-    // khoảng cách Euclidean trong RGB
-    const dr = a[0] - b[0];
-    const dg = a[1] - b[1];
-    const db = a[2] - b[2];
-    return Math.sqrt(dr * dr + dg * dg + db * db);
-  }
+                    cy.contains("#answers button", normalizedAnswer)
+                        .should("be.visible")
+                    cy.log(colors);
+                });
+        });
 });

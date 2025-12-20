@@ -30,7 +30,7 @@ module.exports = defineConfig({
   // }
 
 });
-// cho bài 17
+// 
 module.exports = defineConfig({
   reporter: "mochawesome",
   reporterOptions: {
@@ -43,16 +43,8 @@ module.exports = defineConfig({
     retries: 10,
   },
 });
-//
-// const { defineConfig } = require("cypress");
+//cho bài flaky
 
-// module.exports = defineConfig({
-//   e2e: {
-//     retries: {
-//       runMode: 10,   // khi chạy cypress run
-//       openMode: 10, // khi chạy cypress open
-//     },
-//   },
-// });
+
 
 
