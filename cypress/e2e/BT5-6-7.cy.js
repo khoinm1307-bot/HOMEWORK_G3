@@ -1,6 +1,6 @@
 describe("The slow task", () => {
 
-  it("Wait the slow task finnish", () => {
+  it("BT5_Wait the slow task finnish", () => {
     cy.intercept("GET", "**/*").as("anyGet");   // bắt GET (trong đó có request chậm)
     /*Dùng để chặn (intercept) các request network.Cho phép:
 -Theo dõi request
@@ -20,7 +20,7 @@ describe("The slow task", () => {
 
 describe("Query", () => {
 
-  it("Lấy phần tử trong bảng", () => {
+  it("BT6_Lấy phần tử trong bảng", () => {
     cy.visit('https://practice.expandtesting.com/large');
     cy.get("table tbody tr td")
       .contains("48.48")

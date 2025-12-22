@@ -17,8 +17,8 @@ describe("BT16-Note.E2E", () => {
       title: `Note ${uid}`,
       description: `This is a test note created at ${new Date(uid).toISOString()}`,
     };
-    cy.intercept("DELETE", "/notes/api/notes/").as("deleteNote");
-    cy.intercept("GET", "/notes**").as("getNote");
+    cy.intercept("DELETE", "/notes/api/notes/**").as("deleteNote");
+    cy.intercept("GET", "/notes/**").as("getNote");
     //===Đăng ký======
     cy.get('[data-testid="open-register-view"]').click();
     cy.get('input[data-testid="register-email"]').type(user.email);
@@ -29,9 +29,7 @@ describe("BT16-Note.E2E", () => {
         if ($els.length) cy.wrap($els.first()).clear().type(user.password);// dùng chung biến với ô passwword
       });
     cy.get('button[data-testid="register-submit"]:contains("Register")').click();
-    // Đợi ApI đăng ký trả về trạng thái thành công
-    //  cy.intercept('POST', '/register').as('register');
-    // cy.wait('@register', { timeout: 20000 }).its('response.statusCode').should('be.oneOf', [200, 201, 204]);
+    // Check thông báo đăng ký thành công
     cy.get('div.alert-success')
       .contains('User account created successfully')
       .should('be.visible');
