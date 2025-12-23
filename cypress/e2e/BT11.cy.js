@@ -1,4 +1,4 @@
-describe("JS Dialogs handling", () => {
+describe("BT11", () => {
 
   beforeEach(() => {
     cy.visit("https://practice.expandtesting.com/js-dialogs");
