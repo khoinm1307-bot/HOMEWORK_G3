@@ -20,7 +20,7 @@ describe("The slow task", () => {
 
 describe("Query", () => {
 
-  it("BT6_Lấy phần tử trong bảng", () => {
+  it.only("BT6_Lấy phần tử trong bảng", () => {
      cy.visit("https://practice.expandtesting.com/large");
 
     cy.contains("table tbody tr td", "48.48")
