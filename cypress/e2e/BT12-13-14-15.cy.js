@@ -21,7 +21,7 @@ describe(" BT-12Context Menu", () => {
   });
 });
 describe(" BT13- Horizontal Slider", () => {
-  it("BT13-Kéo slider tới giá trị 3", () => {
+  it.only("BT13-Kéo slider tới giá trị 3", () => {
     cy.visit("https://practice.expandtesting.com/horizontal-slider");
 
    cy.get("#range")
@@ -61,7 +61,7 @@ describe("Dynamic Controls", () => {
   });
 });
 describe("BT15 Dynamic Controls ", () => {
-  it.only("BT15-Enable/Disable", () => {
+  it("BT15-Enable/Disable", () => {
     cy.visit("https://practice.expandtesting.com/dynamic-controls");
 
     const inputBox = () => cy.get("#input-example");

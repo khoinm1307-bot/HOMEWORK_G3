@@ -2,9 +2,9 @@ import { LoginPage } from "../support/Pages/Login.js";
 const suite = require("../fixtures/Loginarray.json"); // Chạy data-driven ngay khi file spec  load =>> có dữ lieu suite ngaay để tạo it() bang forEarch
 const loginPage1 = new LoginPage();
 
-describe("Basic 01 - Login", () => {
+describe("BT 01 - Login", () => {
 
-   before(() => {// Chạy 1 lần trước tất cả test trong suite
+   before(() => {// Chạy 1 lần trước tất cả test
     cy.fixture("Loginarray").as("suite"); // Đọc file trong fixture ( file data test)
     //tạo alias @suite, và Cypress sẽ gắn nó vào Mocha context (this.suite) khi bạn dùng function () {} trong it=> lấy dữ liệu url, cases từ fixture để chạy test “data-driven”.
   });

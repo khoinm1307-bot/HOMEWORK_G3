@@ -19,7 +19,7 @@ it("Spin wheel and answer correct color on first try", () => {
 
             const anglePerColor = 360 / finalColors.length;
 
-            //  Click quay bảng màu
+            //  Click quay bảng màu 
             cy.get("#picker").click();
 
             // Lấy góc rotate của canvas
@@ -49,8 +49,9 @@ it("Spin wheel and answer correct color on first try", () => {
                     const normalizedAnswer = answerColor.trim().toLowerCase();
 
                     cy.contains("#answers button", normalizedAnswer)
-                        .should("be.visible")
+                        .should("be.visible").click();
                     cy.log(colors);
+                    // cy.contains("#answers button", normalizedAnswer).click();
                 });
         });
 });
